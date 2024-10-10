@@ -1,7 +1,12 @@
 import csv
 from datetime import datetime, timedelta
-from database.connect import daily_collection, monthly_collection, accidents_collection, weekly_collection
+
+from database.connect import daily_collection,  monthly_collection,accidents_collection, weekly_collection
 import os
+
+# from repository.utils import parse_date, get_week_range, extract_the_month
+
+
 
 def get_week_range(date):
     start = date - timedelta(days=date.weekday())
@@ -43,7 +48,6 @@ def init_chicago_car_accidents():
 
         # Parse the crash date
         crash_date = parse_date(row['CRASH_DATE'])
-        crash_date_only = crash_date.replace(hour=0, minute=0, second=0, microsecond=0)  # Ignore time
 
         # Create the accident dictionary
         accident = {
@@ -60,10 +64,10 @@ def init_chicago_car_accidents():
         # Insert accident into accidents collection
         accidents_collection.insert_one(accident)
 
-        # Create daily entry (ignore time)
+        # Create daily, weekly, and monthly entries
         daily = {
             'area': row['BEAT_OF_OCCURRENCE'],
-            'date': crash_date_only,  # Use date only
+            'date': crash_date,  # Keep as datetime
             'cause': [row['PRIM_CONTRIBUTORY_CAUSE']],
             'total_accidents': 1,
             'injuries': {
@@ -100,11 +104,10 @@ def init_chicago_car_accidents():
             }
         }
 
-        # Insert into daily collection (aggregate by day)
+        # Insert into daily collection
         daily_collection.update_many(
             {'area': daily['area'], 'date': daily['date']},
-            {'$inc': {'total_accidents': 1,
-                       'injuries.INJURIES_TOTAL': daily['injuries']['INJURIES_TOTAL'],
+            {'$inc': {'total_accidents': 1, 'injuries.INJURIES_TOTAL': daily['injuries']['INJURIES_TOTAL'],
                        'injuries.fatal': daily['injuries']['fatal'],
                        'injuries.non_fatal': daily['injuries']['non_fatal']}},
             upsert=True
@@ -113,8 +116,7 @@ def init_chicago_car_accidents():
         # Insert into weekly collection
         weekly_collection.update_many(
             {'area': weekly['area'], 'week_start': weekly['week_start'], 'week_end': weekly['week_end']},
-            {'$inc': {'total_accidents': 1,
-                       'injuries.INJURIES_TOTAL': weekly['injuries']['INJURIES_TOTAL'],
+            {'$inc': {'total_accidents': 1, 'injuries.INJURIES_TOTAL': weekly['injuries']['INJURIES_TOTAL'],
                        'injuries.fatal': weekly['injuries']['fatal'],
                        'injuries.non_fatal': weekly['injuries']['non_fatal']}},
             upsert=True
@@ -123,8 +125,7 @@ def init_chicago_car_accidents():
         # Insert into monthly collection
         monthly_collection.update_many(
             {'area': monthly['area'], 'month': monthly['month']},
-            {'$inc': {'total_accidents': 1,
-                       'injuries.INJURIES_TOTAL': monthly['injuries']['INJURIES_TOTAL'],
+            {'$inc': {'total_accidents': 1, 'injuries.INJURIES_TOTAL': monthly['injuries']['INJURIES_TOTAL'],
                        'injuries.fatal': monthly['injuries']['fatal'],
                        'injuries.non_fatal': monthly['injuries']['non_fatal']}},
             upsert=True
