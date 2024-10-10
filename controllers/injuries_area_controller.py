@@ -4,7 +4,6 @@ from repository.utils import parse_json
 
 
 
-
 injuries_area_blueprint = Blueprint('injuries_area', __name__)
 
 

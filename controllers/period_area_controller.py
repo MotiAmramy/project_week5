@@ -1,8 +1,8 @@
-from datetime import datetime
 from flask import Blueprint, jsonify
-from database.connect import daily_collection, monthly_collection
-from repository.csv_repository import extract_the_month
+from database.connect import  monthly_collection
 from repository.utils import find_the_day, parse_json, find_the_week
+
+
 
 period_area_blueprint = Blueprint('period_area', __name__)
 

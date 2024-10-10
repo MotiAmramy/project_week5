@@ -1,7 +1,5 @@
 from flask import Blueprint, jsonify
-
 from database.connect import accidents_collection
-
 accidents_cause_blueprint = Blueprint('accidents_cause', __name__)
 
 

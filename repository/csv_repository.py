@@ -1,39 +1,11 @@
 import csv
 from datetime import datetime, timedelta
-
 from database.connect import daily_collection,  monthly_collection,accidents_collection, weekly_collection
 import os
-
-# from repository.utils import parse_date, get_week_range, extract_the_month
-
+from repository.utils import read_csv, parse_date, safe_int, get_week_range, extract_the_month
 
 
-def get_week_range(date):
-    start = date - timedelta(days=date.weekday())
-    end = start + timedelta(days=6)
-    return start, end  # Return as datetime objects
 
-def parse_date(date_str: str):
-    has_seconds = len(date_str.split(' ')) > 2
-    date_format = '%m/%d/%Y %H:%M:%S %p' if has_seconds else '%m/%d/%Y %H:%M'
-    return datetime.strptime(date_str, date_format)
-
-def extract_the_month(str_date):
-    date_object = parse_date(str_date)
-    return date_object.month
-
-def read_csv(csv_path):
-    with open(csv_path, 'r') as file:
-        csv_reader = csv.DictReader(file)
-        for row in csv_reader:
-            yield row
-
-def safe_int(value, default=0):
-    """Convert a string to an integer, returning default if empty or invalid."""
-    try:
-        return int(value) if value else default
-    except ValueError:
-        return default
 
 def init_chicago_car_accidents():
     weekly_collection.drop()
