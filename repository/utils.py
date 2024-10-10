@@ -18,3 +18,12 @@ from datetime import timedelta, datetime
 #     # Extract the month
 #     month = date_object.month
 #     return month
+
+
+
+import json
+from bson import json_util
+
+
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
