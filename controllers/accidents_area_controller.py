@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from database.connect import accidents_collection
 from indexes.index_mongo import index_get_accidents_by_area
 
+
 accidents_area_blueprint = Blueprint('accidents_area', __name__)
 
 

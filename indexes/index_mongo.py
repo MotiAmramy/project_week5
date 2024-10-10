@@ -9,4 +9,6 @@ def index_get_accidents_by_area(area):
     # Print execution stats with index
     print(f"Query with index took {with_index_execution_stats['executionTimeMillis']} ms")
     print(f"Total docs examined with index: {with_index_execution_stats['totalDocsExamined']}")
-    # Return the actual query result (using index)
+
+
+
