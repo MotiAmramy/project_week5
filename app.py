@@ -6,5 +6,6 @@ app = Flask(__name__)
 
 if __name__ == '__main__':
 
+
     init_chicago_car_accidents()
     app.run(debug=True)
